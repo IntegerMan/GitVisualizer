@@ -16,3 +16,42 @@ def get_relationship_count(commit_hash, path, combinations):
                 return 0
 
     return 0
+
+
+def build_edge_list(df):
+    """
+    Builds an edge list out of a collection of grouped data in a Pandas data frame. It is assumed that the groups
+    will have an index that is the name of the file and each row will have a series of columns starting with "rel_"
+    and ending with the name of the file and contain the count of times the files are modified together.
+
+    :param df: the Pandas grouped data frame.
+    :return: an array of edge nodes defining the file the edge is from, the edge is to, and the strength
+    """
+
+    edges = []
+    index = 0
+
+    for path in df.index:
+        for col in df.columns:
+            # Only pay attention to relationship columns
+            if not col.startswith('rel_'):
+                continue
+
+            # strip out 'rel_'
+            to_path = col[len('rel_'):]
+
+            # Ignore self-relations
+            if to_path == path:
+                continue
+
+            # Extract the strength
+            val = df.iloc[index][col]
+
+            # Ignore no relationship edges
+            if val <= 0:
+                continue
+
+            edges.append({'from': path, 'to': to_path, 'strength': val})
+        index += 1
+
+    return edges
