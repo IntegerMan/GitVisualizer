@@ -90,6 +90,10 @@ def build_edge_tuples(df):
             if val <= 0:
                 continue
 
+            # Do not duplicate connections in the reverse direction
+            if (to_path, path, val) in edges:
+                continue
+
             edges.append((path, to_path, val))
         index += 1
 
