@@ -64,7 +64,7 @@ def build_edge_tuples(df):
     and ending with the name of the file and contain the count of times the files are modified together.
 
     :param df: the Pandas grouped data frame.
-    :return: an array of edge tuples with the file the edge is from and the edge is to
+    :return: an array of edge tuples with the file the edge is from, the edge is to, and its strength
     """
 
     edges = []
@@ -90,7 +90,7 @@ def build_edge_tuples(df):
             if val <= 0:
                 continue
 
-            edges.append((path, to_path))
+            edges.append((path, to_path, val))
         index += 1
 
     return edges
