@@ -1,10 +1,17 @@
 from pydriller import Repository
 
-def analyzeRepository(repoPath):
-    fileModifications = []
-    pathCombinations = []
 
-    for commit in Repository(repoPath).traverse_commits():
+def analyze_repository(path):
+    """
+    Analyzes a git repository and returns a tuple containing the combinations of files modified and path combinations
+    :param path: the git repository URL
+    :return: a tuple containing path combinations and file modifications.
+    """
+
+    combinations = []
+    modifications = []
+
+    for commit in Repository(path).traverse_commits():
         paths = []
         for file in commit.modified_files:
             paths.append(file.new_path)
@@ -15,7 +22,8 @@ def analyzeRepository(repoPath):
                 'lines_added': file.added_lines,
                 'lines_deleted': file.deleted_lines,
             }
-            fileModifications.append(record)
-        pathCombinations.append(paths)
+            modifications.append(record)
+        combinations.append({'hash': commit.hash, 'paths': paths}
+                            )
 
-    return pathCombinations, fileModifications
+    return combinations, modifications
